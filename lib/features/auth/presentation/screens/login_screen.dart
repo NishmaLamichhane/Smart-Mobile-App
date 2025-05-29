@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 
 class LoginScreen extends StatelessWidget {
   LoginScreen({super.key});
+
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  // Reusable inputFields widget
+
+  // Reusable input field widget
   TextFormField inputFields({
     required BuildContext context,
     required String hintText,
@@ -13,7 +15,7 @@ class LoginScreen extends StatelessWidget {
     required IconData icon,
     required TextEditingController controller,
     bool obscure = false,
-    TextInputType? TextInputType,
+    TextInputType? textInputType,
   }) {
     return TextFormField(
       controller: controller,
@@ -24,11 +26,13 @@ class LoginScreen extends StatelessWidget {
         labelText: labelText,
       ),
       onTapOutside: (event) => FocusScope.of(context).unfocus(),
-      onSaved: (newValue) {},
       validator: (value) {
+        if (value == null || value.isEmpty) {
+          return "Please enter $labelText";
+        }
         return null;
       },
-      keyboardType: TextInputType,
+      keyboardType: textInputType,
       obscureText: obscure,
     );
   }
@@ -38,16 +42,15 @@ class LoginScreen extends StatelessWidget {
       final email = _emailController.text;
       final password = _passwordController.text;
 
-      // Example hardcoded credentials
       if (email == "admin@gmail.com" && password == "admin123") {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text("Login successful")));
-        // Navigate to home or dashboard
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Login successful")),
+        );
+        // Navigate to home or dashboard screen
       } else {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text("Invalid email or password")));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Invalid email or password")),
+        );
       }
     }
   }
@@ -56,48 +59,42 @@ class LoginScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 20.0,
-            vertical: 100.0,
-          ),
-          // padding: const EdgeInsets.all(16.0),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 100.0),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                "Smart \n Organizer",
-                style: TextStyle(
-                  fontSize: 32,
-                  fontStyle: FontStyle.italic,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.deepPurple,
-                  letterSpacing: 10,
+              Center(
+                child: Text(
+                  "Smart \n Organizer",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 32,
+                    fontStyle: FontStyle.italic,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.deepPurple,
+                    letterSpacing: 4,
+                  ),
                 ),
               ),
-              SizedBox(height: 30),
+              SizedBox(height: 40),
               Form(
+                key: _formKey,
                 child: Column(
                   children: [
-                    TextFormField(
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
-                        prefixIcon: Icon(Icons.person_2_outlined),
-                        hintText: "Email your email",
-                        labelText: "Email",
-                      ),
-                      onTapOutside: (event) => FocusScope.of(context).unfocus(),
-                      onSaved: (newValue) {},
-                      validator: (value) {
-                        return null;
-                      },
-                      keyboardType: TextInputType.emailAddress,
-                      obscureText: true,
+                    // Email Field
+                    inputFields(
+                      context: context,
+                      hintText: "Enter your email",
+                      labelText: "Email",
+                      icon: Icons.person_2_outlined,
                       controller: _emailController,
+                      obscure: false,
+                      textInputType: TextInputType.emailAddress,
                     ),
                     SizedBox(height: 20),
-                    // Using the reusable inputFields widget for Password
+
+                    // Password Field
                     inputFields(
                       context: context,
                       hintText: "Enter your password",
@@ -105,23 +102,42 @@ class LoginScreen extends StatelessWidget {
                       icon: Icons.lock_outline,
                       obscure: true,
                       controller: _passwordController,
-                      TextInputType: TextInputType.visiblePassword,
+                      textInputType: TextInputType.visiblePassword,
                     ),
-                    SizedBox(height: 20),
+                    SizedBox(height: 30),
+
+                    // Login Button
                     ElevatedButton(
                       onPressed: () => _login(context),
-                      child: Text("Login"),
                       style: ElevatedButton.styleFrom(
-                        minimumSize: Size(150, 50), //width and height
+                        minimumSize: Size(150, 50),
                         backgroundColor: Colors.deepPurple,
                         foregroundColor: Colors.white,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10.0),
                         ),
                       ),
+                      child: Text("Login"),
                     ),
                   ],
                 ),
+              ),
+              SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text("Don't have an account?"),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/registerScreen');
+                    },
+                    style: TextButton.styleFrom(
+                      padding: EdgeInsets.zero,
+                      foregroundColor: Colors.deepPurple,
+                    ),
+                    child: Text("Sign Up"),
+                  ),
+                ],
               ),
             ],
           ),
