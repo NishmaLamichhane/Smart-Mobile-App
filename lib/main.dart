@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:smart_folder_mobile_app/constants/app_routes.dart';
 import 'package:smart_folder_mobile_app/features/auth/presentation/screens/login_screen.dart';
+import 'package:smart_folder_mobile_app/features/auth/presentation/screens/register_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -32,7 +34,12 @@ class MyApp extends StatelessWidget {
         // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
+
       home: LoginScreen(),
+      routes: {
+        AppRoutes.loginScreen: (context) => LoginScreen(),
+        AppRoutes.registerScreen: (context) => RegisterScreen(),
+      },
     );
   }
 }
