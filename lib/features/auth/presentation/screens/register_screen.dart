@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:smart_folder_mobile_app/features/auth/data/models/users.dart';
 import 'package:smart_folder_mobile_app/features/auth/presentation/widgets/input_fields.dart';
 
 class RegisterScreen extends StatelessWidget {
   RegisterScreen({super.key});
   final GlobalKey<FormState> _registerKey = GlobalKey<FormState>();
   final TextEditingController _passwordController = TextEditingController();
- 
+
+  User? user = User();
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +19,7 @@ class RegisterScreen extends StatelessWidget {
               horizontal: 20.0,
               vertical: 100.0,
             ),
-          
+
             child: Column(
               children: [
                 Text(
@@ -47,9 +49,11 @@ class RegisterScreen extends StatelessWidget {
                           return null;
                         },
                         icon: Icons.person_outline,
-                      
+
                         TextInputType: TextInputType.name,
                         onSaved: (value) {
+                          //add json serialization logic here
+                          user!.fullname = value; // Assuming you have a user object to save the full name
                           // Save the full name value if needed
                         },
                       ),
@@ -65,8 +69,14 @@ class RegisterScreen extends StatelessWidget {
                           return null;
                         },
                         icon: Icons.email_outlined,
-                      
+
                         TextInputType: TextInputType.emailAddress,
+                        onSaved: (value) {
+                          //add json serialization logic here
+                          user!.email =
+                              value; // Assuming you have a user object to save the email
+                          // Save the email value if needed
+                        },
                       ),
                       SizedBox(height: 10),
                       // Using the reusable inputFields widget for Password
@@ -84,6 +94,13 @@ class RegisterScreen extends StatelessWidget {
                         obscure: true,
                         controller: _passwordController,
                         TextInputType: TextInputType.visiblePassword,
+                         onSaved: (value) {
+                          //add json serialization logic here
+
+                          user!.password =
+                              value; // Assuming you have a user object to save the full name
+                          // Save the full name value if needed
+                        },
                       ),
                       SizedBox(height: 10),
 
@@ -101,7 +118,7 @@ class RegisterScreen extends StatelessWidget {
                         },
                         icon: Icons.lock_outline,
                         obscure: true,
-                      
+
                         TextInputType: TextInputType.visiblePassword,
                       ),
                       SizedBox(height: 10),
@@ -118,7 +135,15 @@ class RegisterScreen extends StatelessWidget {
                         },
                         icon: Icons.location_on_outlined,
                         TextInputType: TextInputType.visiblePassword,
+                        onSaved: (value) {
+                          //add json serialization logic here
+
+                          user!.address =
+                              value; // Assuming you have a user object to save the address
+                          // Save the address value if needed
+                        },
                       ),
+                      
                       SizedBox(height: 10),
 
                       inputFields(
@@ -136,17 +161,27 @@ class RegisterScreen extends StatelessWidget {
                           return null;
                         },
                         icon: Icons.phone_outlined,
-                       
+
                         TextInputType: TextInputType.visiblePassword,
+                        onSaved: (value) {
+                          //add json serialization logic here
+
+                          user!.phoneNumber =
+                              value; // Assuming you have a user object to save the phone number
+                          // Save the phone number value if needed
+                        },
                       ),
                       SizedBox(height: 10),
 
                       ElevatedButton(
                         onPressed: () {
-                          if (_registerKey.currentState!.validate()) {
+                          if (!_registerKey.currentState!.validate()) {
                             // Handle registration logic here
                             return;
                           }
+                          _registerKey.currentState!.save();
+                          print(user!.toJson());
+
                         },
                         child: Text("Register"),
                         style: ElevatedButton.styleFrom(
