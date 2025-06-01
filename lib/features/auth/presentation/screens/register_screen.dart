@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:smart_folder_mobile_app/features/auth/data/models/users.dart';
+import 'package:smart_folder_mobile_app/features/auth/data/models/register.dart';
+
 import 'package:smart_folder_mobile_app/features/auth/presentation/widgets/input_fields.dart';
 
 class RegisterScreen extends StatelessWidget {
@@ -53,7 +54,8 @@ class RegisterScreen extends StatelessWidget {
                         TextInputType: TextInputType.name,
                         onSaved: (value) {
                           //add json serialization logic here
-                          user!.fullname = value; // Assuming you have a user object to save the full name
+                          user!.fullname =
+                              value; // Assuming you have a user object to save the full name
                           // Save the full name value if needed
                         },
                       ),
@@ -94,7 +96,7 @@ class RegisterScreen extends StatelessWidget {
                         obscure: true,
                         controller: _passwordController,
                         TextInputType: TextInputType.visiblePassword,
-                         onSaved: (value) {
+                        onSaved: (value) {
                           //add json serialization logic here
 
                           user!.password =
@@ -143,7 +145,7 @@ class RegisterScreen extends StatelessWidget {
                           // Save the address value if needed
                         },
                       ),
-                      
+
                       SizedBox(height: 10),
 
                       inputFields(
@@ -181,7 +183,6 @@ class RegisterScreen extends StatelessWidget {
                           }
                           _registerKey.currentState!.save();
                           print(user!.toJson());
-
                         },
                         child: Text("Register"),
                         style: ElevatedButton.styleFrom(
