@@ -20,6 +20,7 @@ final ApiCalls apiCalls;
         endpoint: 'ApiConstants.registerUserRoute',
         data: userData,
       );
+      print(response);
       return 'User registered successfully: ${response['message']}';
     } 
   }

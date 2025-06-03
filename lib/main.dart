@@ -8,6 +8,7 @@ import 'package:smart_folder_mobile_app/features/auth/presentation/screens/login
 import 'package:smart_folder_mobile_app/features/auth/presentation/screens/register_screen.dart';
 
 void main() {
+  ServiceLocator.setupServiceLocator();
   runApp(const MyApp());
 }
 

@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:smart_folder_mobile_app/core/utils/toaster.dart';
 import 'package:smart_folder_mobile_app/features/auth/data/models/register.dart';
-
+import 'package:smart_folder_mobile_app/features/auth/presentation/blocs/auth_bloc.dart';
+import 'package:smart_folder_mobile_app/features/auth/presentation/blocs/auth_event.dart';
+import 'package:smart_folder_mobile_app/features/auth/presentation/blocs/auth_state.dart';
 import 'package:smart_folder_mobile_app/features/auth/presentation/widgets/input_fields.dart';
 
 class RegisterScreen extends StatelessWidget {
@@ -54,7 +58,7 @@ class RegisterScreen extends StatelessWidget {
                         TextInputType: TextInputType.name,
                         onSaved: (value) {
                           //add json serialization logic here
-                          user!.fullname =
+                          user!.name =
                               value; // Assuming you have a user object to save the full name
                           // Save the full name value if needed
                         },
@@ -168,31 +172,58 @@ class RegisterScreen extends StatelessWidget {
                         onSaved: (value) {
                           //add json serialization logic here
 
-                          user!.phoneNumber =
+                          user!.phone =
                               value; // Assuming you have a user object to save the phone number
                           // Save the phone number value if needed
                         },
                       ),
                       SizedBox(height: 10),
 
-                      ElevatedButton(
-                        onPressed: () {
-                          if (!_registerKey.currentState!.validate()) {
-                            // Handle registration logic here
-                            return;
+                      BlocConsumer<AuthBloc, AuthState>(
+                        listener: (context, state) {
+                          if (state is RegisterErrorState) {
+                            print("Error message: ${state.errorMessage}");
+                            showToaster(
+                              context: context,
+                              message: state.errorMessage,
+                              backgroundColor: Colors.red,
+                            );
                           }
-                          _registerKey.currentState!.save();
-                          print(user!.toJson());
+
+                          if (state is RegisterLoadedState) {
+                            print("Success message: ${state.successMessage}");
+                            showToaster(
+                              context: context,
+                              message: state.successMessage,
+                              backgroundColor: Colors.green,
+                            );
+                          }
                         },
-                        child: Text("Register"),
-                        style: ElevatedButton.styleFrom(
-                          minimumSize: Size(150, 50), //width and height
-                          backgroundColor: Colors.deepPurple,
-                          foregroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                        ),
+
+                        builder: (context, state) {
+                          return ElevatedButton(
+                            onPressed: () {
+                              if (!_registerKey.currentState!.validate()) {
+                                // Handle registration logic here
+                                return;
+                              }
+                              _registerKey.currentState!.save();
+                              // print(user!.toJson());
+                              context.read<AuthBloc>().add(
+                                RegisterEvent(userData: user!.toMap()),
+                              );
+                            },
+                            child: Text("Register"),
+                            style: ElevatedButton.styleFrom(
+                              minimumSize: Size(150, 50), //width and height
+                              backgroundColor: Colors.deepPurple,
+                              foregroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
+                            ),
+                          );
+                        },
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
